@@ -1,11 +1,10 @@
-package com.reringuy.ponto.ui.theme
+package com.reringuy.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
-
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
-import com.reringuy.ponto.R
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import com.reringuy.ui.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",

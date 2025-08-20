@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Ponto"
 include(":app")
- 
+include(":feature")
+include(":feature:clockin")
+include(":core")
+include(":core:ui")
