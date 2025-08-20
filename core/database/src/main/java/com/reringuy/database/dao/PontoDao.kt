@@ -1,4 +1,4 @@
-package com.reringuy.ponto.dao
+package com.reringuy.database.dao
 
 import androidx.room.Dao
 

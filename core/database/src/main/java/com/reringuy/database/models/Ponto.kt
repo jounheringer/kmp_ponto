@@ -1,4 +1,4 @@
-package com.reringuy.ponto.models
+package com.reringuy.database.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,8 +1,8 @@
-package com.reringuy.ponto.module
+package com.reringuy.dependency_injection
 
 import android.content.Context
 import androidx.room.Room
-import com.reringuy.ponto.PontoDatabase
+import com.reringuy.database.PontoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

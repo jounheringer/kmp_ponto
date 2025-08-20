@@ -1,9 +1,9 @@
-package com.reringuy.ponto
+package com.reringuy.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.reringuy.ponto.dao.PontoDao
-import com.reringuy.ponto.models.Ponto
+import com.reringuy.database.dao.PontoDao
+import com.reringuy.database.models.Ponto
 
 @Database(
     entities = [
