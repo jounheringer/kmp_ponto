@@ -12,6 +12,13 @@ android {
     namespace = "com.reringuy.clockin"
     compileSdk = 36
 
+    defaultConfig {
+        minSdk = 26
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -65,6 +72,9 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
+    implementation(libs.threetenabp)
+
     implementation(project(":core:mvi"))
     implementation(project(":core:ui"))
+    implementation(project(":core:database"))
 }

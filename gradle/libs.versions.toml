@@ -18,6 +18,7 @@ material = "1.12.0"
 material-extendend = "1.7.8"
 material3 = "1.3.2"
 compose-navigation = "1.2.0"
+threetenabp = "1.4.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-extendend" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "compose-navigation" }
+threetenabp = { group = "com.jakewharton.threetenabp", name = "threetenabp", version.ref = "threetenabp" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
