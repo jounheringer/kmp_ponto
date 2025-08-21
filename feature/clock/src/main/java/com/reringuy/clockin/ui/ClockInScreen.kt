@@ -1,4 +1,4 @@
-package com.reringuy.clockin
+package com.reringuy.clockin.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,13 +27,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.reringuy.clockin.reducer.ClockReducer
+import com.reringuy.clockin.viewmodel.ClockInViewmodel
 import com.reringuy.mvi.rememberFlowWithLifecycle
 import com.reringuy.ui.theme.componentes.Loading
 
@@ -39,15 +44,27 @@ fun ClockInScreenWrapper(viewmodel: ClockInViewmodel = hiltViewModel()) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
     val effects = rememberFlowWithLifecycle(viewmodel.effect)
 
+    LaunchedEffect(effects) {
+        effects.collect {
+        }
+    }
+
     if (!state.loading)
-        ClockDetails()
+        ClockDetails(
+            state = state,
+            setDataVisible = viewmodel::setDataVisible,
+            onExpandHistory = viewmodel::setExpandedHistory
+        )
     else
         Loading()
 }
 
-@Preview
 @Composable
-fun ClockDetails() {
+fun ClockDetails(
+    state: ClockReducer.ClockState,
+    setDataVisible: () -> Unit,
+    onExpandHistory: () -> Unit
+) {
     Card(Modifier.padding(16.dp)) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -61,12 +78,17 @@ fun ClockDetails() {
                 Text(text = "Meu ponto", style = MaterialTheme.typography.titleMedium)
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Rounded.Visibility,
-                            contentDescription = "Visivel"
-                        )
-//                        Icon(imageVector = Icons.Rounded.VisibilityOff, contentDescription = "Invinsivel")
+                    IconButton(onClick = setDataVisible) {
+                        if (!state.dataVisible)
+                            Icon(
+                                imageVector = Icons.Rounded.Visibility,
+                                contentDescription = "Visivel"
+                            )
+                        else
+                            Icon(
+                                imageVector = Icons.Rounded.VisibilityOff,
+                                contentDescription = "Invinsivel"
+                            )
                     }
                     IconButton(onClick = {}) {
                         Icon(
@@ -77,7 +99,7 @@ fun ClockDetails() {
                 }
             }
 
-            LastClock()
+            LastClock(state = state, onExpandHistory = onExpandHistory)
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 CardSecondaryDetails(modifier = Modifier.weight(1f), "Entrada", "15/08")
@@ -96,7 +118,7 @@ fun ClockDetails() {
 }
 
 @Composable
-fun LastClock() {
+fun LastClock(state: ClockReducer.ClockState, onExpandHistory: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -110,8 +132,12 @@ fun LastClock() {
         ) {
             Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .background(color = MaterialTheme.colorScheme.tertiaryContainer),
+                    .heightIn(min = 48.dp)
+                    .width(48.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = RoundedCornerShape(bottomEnd = if (state.historyExpanded) 16.dp else 0.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -137,7 +163,7 @@ fun LastClock() {
                 )
             }
             TextButton(
-                onClick = {},
+                onClick = onExpandHistory,
                 colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(text = "Detalhes", style = MaterialTheme.typography.labelLarge)
@@ -148,6 +174,11 @@ fun LastClock() {
                 )
             }
         }
+//        if (state.historyExpanded) {
+//            Column {
+//
+//            }
+//        }
     }
 }
 
