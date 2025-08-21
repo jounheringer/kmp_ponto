@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.reringuy.clockin.ClockInScreen
+import com.reringuy.clockin.ClockDetails
 import com.reringuy.ui.theme.PontoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PontoTheme {
-                ClockInScreen()
+                ClockDetails()
             }
         }
     }
