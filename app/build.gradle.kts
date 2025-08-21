@@ -70,4 +70,5 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":core:dependency-injection"))
+    implementation(project(":feature:clockin"))
 }
