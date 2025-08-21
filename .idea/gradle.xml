@@ -18,7 +18,7 @@
             <option value="$PROJECT_DIR$/core/mvi" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/clockin" />
+            <option value="$PROJECT_DIR$/feature/clock" />
           </set>
         </option>
       </GradleProjectSettings>

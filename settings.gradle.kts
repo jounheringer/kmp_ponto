@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 rootProject.name = "Ponto"
 include(":app")
 include(":feature")
-include(":feature:clockin")
+include(":feature:clock")
 include(":core")
 include(":core:ui")
 include(":core:database")
