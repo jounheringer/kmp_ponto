@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.material.icons.extended)
+
     implementation(project(":core:ui"))
     implementation(project(":core:dependency-injection"))
     implementation(project(":feature:clock"))
