@@ -20,16 +20,20 @@ import kotlin.time.ExperimentalTime
         )
     ]
 )
-data class ClockHour (
+data class ClockHour(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long,
+    var uid: Long,
     val date: Instant,
     val type: ClockHourType,
     val clockId: Long
-)
+) {
+    companion object {
+        fun new(clockId: Long, type: ClockHourType = ClockHourType.ENTRADA) = ClockHour(0, Instant.now(), type, clockId)
+    }
+}
 
 
-enum class ClockHourType {
-    ENTRADA,
-    SAIDA
+enum class ClockHourType(val label: String) {
+    ENTRADA("Entrada"),
+    SAIDA("Saída")
 }

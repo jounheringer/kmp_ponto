@@ -12,7 +12,7 @@ import java.time.LocalDate
 )
 data class Clock(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long,
+    var uid: Long,
     @ColumnInfo(name = "data_inicio")
     val dateStart: LocalDate,
     @ColumnInfo(name = "data_fim")

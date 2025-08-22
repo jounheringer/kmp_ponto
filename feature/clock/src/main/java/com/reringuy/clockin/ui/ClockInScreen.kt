@@ -1,5 +1,6 @@
 package com.reringuy.clockin.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -21,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,39 +34,58 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reringuy.clockin.reducer.ClockReducer
+import com.reringuy.clockin.utils.formatInstantToDateTime
 import com.reringuy.clockin.viewmodel.ClockInViewmodel
+import com.reringuy.database.dto.ClockWithHours
+import com.reringuy.database.models.ClockHour
 import com.reringuy.mvi.rememberFlowWithLifecycle
+import com.reringuy.mvi.utils.OperationHandler
 import com.reringuy.ui.theme.componentes.Loading
 
 @Composable
 fun ClockInScreenWrapper(viewmodel: ClockInViewmodel = hiltViewModel()) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
     val effects = rememberFlowWithLifecycle(viewmodel.effect)
-
+    val context = LocalContext.current
     LaunchedEffect(effects) {
         effects.collect {
+            when (it) {
+                is ClockReducer.ClockEffects.OnError -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is ClockReducer.ClockEffects.OnTodayClockLoaded -> {
+                    viewmodel.getWorkedHours(it.todayClock)
+                }
+            }
         }
     }
 
-    if (!state.loading)
+    if (state.todayClock is OperationHandler.Success) {
+        val data = (state.todayClock as OperationHandler.Success<ClockWithHours>).data
         ClockDetails(
             state = state,
+            todayClock = data,
             setDataVisible = viewmodel::setDataVisible,
-            onExpandHistory = viewmodel::setExpandedHistory
+            onExpandHistory = viewmodel::setExpandedHistory,
+            onRegisterClockHour = viewmodel::setClockHour
         )
-    else
+    } else
         Loading()
 }
 
 @Composable
 fun ClockDetails(
     state: ClockReducer.ClockState,
+    todayClock: ClockWithHours,
     setDataVisible: () -> Unit,
-    onExpandHistory: () -> Unit
+    onExpandHistory: () -> Unit,
+    onRegisterClockHour: () -> Unit
 ) {
     Card(Modifier.padding(16.dp)) {
         Column(
@@ -99,16 +121,26 @@ fun ClockDetails(
                 }
             }
 
-            LastClock(state = state, onExpandHistory = onExpandHistory)
+            LastClock(state = state, todayClock = todayClock, onExpandHistory = onExpandHistory)
 
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardSecondaryDetails(modifier = Modifier.weight(1f), "Entrada", "15/08")
-                CardSecondaryDetails(modifier = Modifier.weight(1f), "Saída", "15/08")
+                CardSecondaryDetails(
+                    modifier = Modifier.weight(1f),
+                    hidden = !state.dataVisible,
+                    "Horas Trabalhadas",
+                    state.workedHours
+                )
+                CardSecondaryDetails(
+                    modifier = Modifier.weight(1f),
+                    hidden = !state.dataVisible,
+                    "Banco de Horas",
+                    state.bankedHours
+                )
             }
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {},
+                onClick = onRegisterClockHour,
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(text = "Registrar ponto", style = MaterialTheme.typography.titleMedium)
@@ -118,7 +150,14 @@ fun ClockDetails(
 }
 
 @Composable
-fun LastClock(state: ClockReducer.ClockState, onExpandHistory: () -> Unit) {
+fun LastClock(
+    state: ClockReducer.ClockState,
+    todayClock: ClockWithHours,
+    onExpandHistory: () -> Unit
+) {
+    val (_, lastClockHour) = todayClock.clockHours.lastOrNull()?.date?.let {
+        formatInstantToDateTime(it)
+    } ?: Pair("", "--")
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -156,11 +195,18 @@ fun LastClock(state: ClockReducer.ClockState, onExpandHistory: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
-                    text = "Registrado às: --:--",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Registrado às: ",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = if (!state.dataVisible) "--:--" else lastClockHour,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             TextButton(
                 onClick = onExpandHistory,
@@ -174,16 +220,39 @@ fun LastClock(state: ClockReducer.ClockState, onExpandHistory: () -> Unit) {
                 )
             }
         }
-//        if (state.historyExpanded) {
-//            Column {
-//
-//            }
-//        }
+        if (state.historyExpanded) {
+            LazyColumn(modifier = Modifier.heightIn(0.dp, 200.dp)) {
+                items(todayClock.clockHours.size) { index ->
+                    ClockDetails(
+                        hidden = !state.dataVisible,
+                        clockHour = todayClock.clockHours[index]
+                    )
+                    if (index < todayClock.clockHours.size - 1)
+                        HorizontalDivider()
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun CardSecondaryDetails(modifier: Modifier, title: String, date: String) {
+fun ClockDetails(hidden: Boolean, clockHour: ClockHour) {
+    val (_, time) = formatInstantToDateTime(clockHour.date)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(text = "Ponto registrado às:", style = MaterialTheme.typography.titleMedium)
+            Text(text = if (hidden) "--:--" else time, style = MaterialTheme.typography.titleMedium)
+        }
+        Text(text = clockHour.type.label, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@Composable
+fun CardSecondaryDetails(modifier: Modifier, hidden: Boolean, title: String, date: String) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
@@ -197,9 +266,8 @@ fun CardSecondaryDetails(modifier: Modifier, title: String, date: String) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "....", style = MaterialTheme.typography.titleMedium)
+            Text(text = if (hidden) "...." else date, style = MaterialTheme.typography.titleMedium)
             Text(text = title, style = MaterialTheme.typography.bodyMedium)
         }
     }
-
 }
