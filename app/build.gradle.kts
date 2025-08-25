@@ -70,6 +70,8 @@ dependencies {
 
     implementation(libs.material.icons.extended)
 
+    implementation(libs.bundles.material.adaptive)
+
     implementation(project(":core:ui"))
     implementation(project(":core:dependency-injection"))
     implementation(project(":feature:clock"))

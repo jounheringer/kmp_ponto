@@ -46,7 +46,6 @@ class ClockReducer : Reducer<
                 bankedHours = "00:00"
             )
         }
-
     }
 
     override fun reduce(

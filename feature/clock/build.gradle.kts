@@ -72,7 +72,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.threetenabp)
+    implementation(libs.bundles.material.adaptive)
 
     implementation(project(":core:mvi"))
     implementation(project(":core:ui"))

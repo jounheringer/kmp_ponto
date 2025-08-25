@@ -4,39 +4,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.rounded.CreditCard
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowSize
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.reringuy.clockin.ui.ClockInScreenWrapper
+import androidx.compose.ui.unit.toSize
+import com.reringuy.clockin.MainClockUI
 import com.reringuy.ui.theme.PontoTheme
+import com.reringuy.ui.theme.Routes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,113 +34,48 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val scrollBehavior =
-                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+            val bottomBarRoutes = listOf(Routes.Menu, Routes.Schedule, Routes.Card, Routes.Profile)
+
+            val windowSize = with(LocalDensity.current) {
+                currentWindowSize().toSize().toDpSize()
+            }
+
+            var selectedDestination: Routes by remember { mutableStateOf(Routes.Menu) }
+
+            val layoutType = if (windowSize.width >= 1200.dp) {
+                NavigationSuiteType.NavigationDrawer
+            } else {
+                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                    currentWindowAdaptiveInfo()
+                )
+            }
 
             PontoTheme {
-                Scaffold(
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    bottomBar = { BottomAppBar() },
-                    topBar = { TopAppBar(scrollBehavior = scrollBehavior) }
-                ) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        ClockInScreenWrapper()
+                NavigationSuiteScaffold(
+                    layoutType = layoutType,
+                    navigationSuiteItems = {
+                        bottomBarRoutes.forEach {
+                            item(
+                                selected = it == selectedDestination,
+                                onClick = { selectedDestination = it },
+                                icon = {
+                                    Icon(
+                                        imageVector = it.icon,
+                                        contentDescription = it.title
+                                    )
+                                },
+                                label = {
+                                    Text(text = it.title)
+                                }
+                            )
+                        }
                     }
+                ) {
+                    MainClockUI()
                 }
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBar(scrollBehavior: TopAppBarScrollBehavior) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
-        ),
-        title = {
-            Text(
-                text = "Ponto",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.List,
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        scrollBehavior = scrollBehavior
-    )
-}
-
-@Composable
-fun BottomAppBar() {
-    BottomAppBar(
-        actions = {
-            BottomAppBarButton(
-                icon = Icons.Rounded.Home,
-                title = "Menu",
-                selected = false,
-                onItemSelected = { }
-            )
-            BottomAppBarButton(
-                icon = Icons.Filled.Schedule,
-                title = "TODO()",
-                selected = false,
-                onItemSelected = { }
-            )
-            BottomAppBarButton(
-                icon = Icons.Rounded.CreditCard,
-                title = "TODO()",
-                selected = false,
-                onItemSelected = { }
-            )
-            BottomAppBarButton(
-                icon = Icons.Rounded.Person,
-                title = "Perfil",
-                selected = false,
-                onItemSelected = { }
-            )
-        }
-    )
-}
-
-@Composable
-fun BottomAppBarButton(
-    icon: ImageVector,
-    title: String,
-    selected: Boolean,
-    onItemSelected: () -> Unit
-) {
-    if (selected)
-        Card {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(imageVector = icon, contentDescription = title)
-                Text(text = title, style = MaterialTheme.typography.titleMedium)
-            }
-        }
-    else
-        IconButton(onClick = onItemSelected) {
-            Icon(imageVector = icon, contentDescription = title)
-        }
 }
 
 @Composable

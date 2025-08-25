@@ -30,4 +30,8 @@ interface PontoDao {
     @Transaction
     @Query("SELECT * FROM pontos WHERE STRFTIME('%Y-%m', data_inicio) = :yearAndMonth")
     fun getClocksByMonth(yearAndMonth: String): Flow<List<ClockWithHours>>
+
+    @Transaction
+    @Query("SELECT * FROM pontos ORDER BY data_inicio DESC")
+    fun getClocks(): Flow<List<ClockWithHours>>
 }
