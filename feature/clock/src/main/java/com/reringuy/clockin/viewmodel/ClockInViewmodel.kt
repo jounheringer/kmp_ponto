@@ -157,10 +157,10 @@ class ClockInViewmodel @Inject constructor(
                 val newClockHour = ClockHour.new(todayClock.data.clock.uid, type = newType)
                 withContext(Dispatchers.IO) {
                     newClockHour.uid = clockDao.insertClockHour(newClockHour)
+                    sendEvent(ClockReducer.ClockEvents.SetClockHour(newClockHour))
+                    getWorkedHours(todayClock.data)
+                    getBankedHours()
                 }
-                sendEvent(ClockReducer.ClockEvents.SetClockHour(newClockHour))
-                getWorkedHours(todayClock.data)
-                getBankedHours()
             } else
                 sendEffect(ClockReducer.ClockEffects.OnError("Erro ao registrar ponto"))
         }

@@ -2,6 +2,7 @@ package com.reringuy.clockin.utils
 
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
@@ -12,6 +13,11 @@ fun formatInstantToDateTime(instant: Instant): Pair<String, String> {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
     val result = formatter.format(localDateTime)
     return Pair(result.split(" ")[0], result.split(" ")[1])
+}
+
+fun formatLocalDateToDate(localDate: LocalDate): String {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    return formatter.format(localDate)
 }
 
 fun formatInstantToYearAndMonth(instant: Instant): String {

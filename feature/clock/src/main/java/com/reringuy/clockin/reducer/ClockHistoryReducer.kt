@@ -44,8 +44,19 @@ class ClockHistoryReducer :
                         if (previousState.clockHours is OperationHandler.Success) {
                             val eventData =
                                 (event.dataList as OperationHandler.Success<List<ClockWithHours>>).data
-                            val newData = eventData + previousState.clockHours.data
-                            previousState.copy(clockHours = OperationHandler.Success(newData)) to null
+                            val previousData = previousState.clockHours.data
+
+                            val combinedList = eventData + previousData
+
+                            val groupedClocks = combinedList
+                                .groupBy { it.clock.uid }
+                                .map { (_, clocksWithHours) ->
+                                    val mergedHours = clocksWithHours.flatMap { it.clockHours }
+                                        .distinctBy { it.uid }
+                                        .sortedBy { it.date }
+                                    clocksWithHours.first().copy(clockHours = mergedHours)
+                                }
+                            previousState.copy(clockHours = OperationHandler.Success(groupedClocks)) to null
                         } else
                             previousState.copy(clockHours = event.dataList) to null
                     }

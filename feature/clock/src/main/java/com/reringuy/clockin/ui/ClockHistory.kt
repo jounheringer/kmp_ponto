@@ -1,27 +1,34 @@
 package com.reringuy.clockin.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.reringuy.clockin.reducer.ClockHistoryReducer
 import com.reringuy.clockin.utils.formatInstantToDateTime
+import com.reringuy.clockin.utils.formatLocalDateToDate
 import com.reringuy.clockin.viewmodel.ClockHistoryViewmodel
 import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.database.models.ClockHour
 import com.reringuy.mvi.rememberFlowWithLifecycle
 import com.reringuy.mvi.utils.OperationHandler
 import com.reringuy.ui.theme.componentes.Loading
@@ -30,24 +37,34 @@ import com.reringuy.ui.theme.componentes.Loading
 fun ClockHistoryWrapper(modifier: Modifier, viewmodel: ClockHistoryViewmodel = hiltViewModel()) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
     val effects = rememberFlowWithLifecycle(viewmodel.effect)
+    val context = LocalContext.current
 
     LaunchedEffect(effects) {
         effects.collect {
-
+            when (it) {
+                is ClockHistoryReducer.ClockHistoryEffect.OnError -> {
+                    Toast.makeText(context, it.error, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
     if (state.clockHours is OperationHandler.Success)
-        ClockHistoryScreen(modifier = modifier, clockHours = (state.clockHours as OperationHandler.Success<List<ClockWithHours>>).data)
+        ClockHistoryScreen(
+            modifier = modifier,
+            clockHours = (state.clockHours as OperationHandler.Success<List<ClockWithHours>>).data
+        )
     else
         Loading()
 }
 
 @Composable
 fun ClockHistoryScreen(modifier: Modifier, clockHours: List<ClockWithHours>) {
-    Column(modifier = modifier
-        .padding(16.dp)
-        .fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
         Text(text = "Historico de Pontos", style = MaterialTheme.typography.titleLarge)
 
         LazyColumn(
@@ -64,26 +81,39 @@ fun ClockHistoryScreen(modifier: Modifier, clockHours: List<ClockWithHours>) {
                     )
                 }
             else
-                items(clockHours.flatMap { it.clockHours }) { clockHour ->
-                    ClockHistoryItem(clockHour = clockHour)
+                items(clockHours) { clockWithHour ->
+                    ClockHistoryItem(clockWithHours = clockWithHour)
                 }
         }
     }
 }
 
 @Composable
-fun ClockHistoryItem(clockHour: ClockHour) {
-    val (date, hour) = formatInstantToDateTime(clockHour.date)
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(text = date, style = MaterialTheme.typography.bodyMedium)
-                Text(text = hour, style = MaterialTheme.typography.bodyMedium)
+fun ClockHistoryItem(clockWithHours: ClockWithHours) {
+    val clockDate = formatLocalDateToDate(clockWithHours.clock.dateStart)
+    clockWithHours.clockHours.forEach { clockHour ->
+        val (date, hour) = formatInstantToDateTime(clockHour.date)
+        Card(modifier = Modifier.fillMaxWidth().padding(0.dp, 8.dp)) {
+            Row(modifier = Modifier.height(IntrinsicSize.Min).padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                    Text(text = "Ponto do dia:", style = MaterialTheme.typography.titleMedium)
+                    Text(text = clockDate, style = MaterialTheme.typography.titleMedium)
+                }
+                VerticalDivider()
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(text = date, style = MaterialTheme.typography.titleMedium)
+                        Text(text = hour, style = MaterialTheme.typography.titleMedium)
+                    }
+                    Text(
+                        text = clockHour.type.label,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
-            Text(text = clockHour.type.label, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

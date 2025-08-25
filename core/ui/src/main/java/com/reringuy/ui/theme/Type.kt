@@ -7,11 +7,11 @@ import androidx.compose.ui.text.font.FontWeight
 import com.reringuy.ui.R
 
 
-val displayFontFamily = FontFamily(
+val bodyFontFamily = FontFamily(
     Font(R.font.indie_flower_regular, FontWeight.Normal)
 )
 
-val bodyFontFamily = FontFamily(
+val displayFontFamily = FontFamily(
     Font(R.font.permanent_marker_regular, FontWeight.Normal)
 )
 
