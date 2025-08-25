@@ -14,6 +14,7 @@ import com.reringuy.mvi.utils.OperationHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Duration
@@ -68,29 +69,24 @@ class ClockInViewmodel @Inject constructor(
         viewModelScope.launch {
             try {
                 val currentYearMonth = formatInstantToYearAndMonth(Instant.now())
-                var saldoTotal = Duration.ZERO
-                clockDao.getClocksByMonth(currentYearMonth).collect { clockWithHours ->
-                    clockWithHours.forEach { (_, clockHours) ->
-                        var workedHourDay = Duration.ZERO
-                        val sortedClockHours = clockHours.sortedBy { it.date }
+                clockDao.getClocksByMonth(currentYearMonth).collectLatest { clockWithHours ->
+                    var saldoTotal = Duration.ZERO
+                    val sortedClockHours =
+                        clockWithHours.flatMap { it.clockHours }.sortedBy { it.date }
+                    var workedHourDay = Duration.ZERO
+                    val timeIntervals = mutableMapOf<ClockHour, Instant>()
 
-                        val timeIntervals = mutableMapOf<ClockHour, Instant>()
-
-                        if (sortedClockHours.size > 1) {
-                            sortedClockHours.forEachIndexed { index, hour ->
-                                if (hour.type == ClockHourType.ENTRADA && sortedClockHours.size > index + 1)
-                                    timeIntervals[hour] = sortedClockHours[index + 1].date
-                            }
-
-                            timeIntervals.forEach { (checkIn, checkOut) ->
-                                if (checkIn.type == ClockHourType.ENTRADA)
-                                    workedHourDay += Duration.between(checkIn.date, checkOut)
-                            }
-                        } else
-                            workedHourDay -= Duration.ofHours(8)
-
-                        saldoTotal += workedHourDay.minusHours(8)
+                    sortedClockHours.forEachIndexed { index, clockHour ->
+                        if (clockHour.type == ClockHourType.ENTRADA && sortedClockHours.size > index + 1)
+                            timeIntervals[clockHour] = sortedClockHours[index + 1].date
                     }
+
+                    timeIntervals.forEach { (checkIn, checkOut) ->
+                        if (checkIn.type == ClockHourType.ENTRADA)
+                            workedHourDay += Duration.between(checkIn.date, checkOut)
+                    }
+
+                    saldoTotal += workedHourDay.minusHours(8)
                     sendEvent(
                         ClockReducer.ClockEvents.SetBankedHours(
                             formatDurationToHoursAndMinutes(saldoTotal)
