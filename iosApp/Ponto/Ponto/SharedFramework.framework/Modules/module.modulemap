@@ -1,0 +1,8 @@
+framework module "SharedFramework" {
+    umbrella header "SharedFramework.h"
+
+    export *
+    module * { export * }
+
+    use Foundation
+}

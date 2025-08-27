@@ -46,11 +46,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reringuy.clockin.reducer.ClockReducer
 import com.reringuy.clockin.utils.formatInstantToDateTime
 import com.reringuy.clockin.viewmodel.ClockInViewmodel
-import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.database.models.ClockHour
-import com.reringuy.mvi.rememberFlowWithLifecycle
-import com.reringuy.mvi.utils.OperationHandler
-import com.reringuy.ui.theme.componentes.Loading
+import com.reringuy.database.entities.ClockHour
+import com.reringuy.database.relation.ClockWithHours
+import com.reringuy.utils.OperationHandler
+import com.reringuy.utils.components.Loading
+import com.reringuy.utils.mvi.rememberFlowWithLifecycle
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun ClockInScreenWrapper(modifier: Modifier, viewmodel: ClockInViewmodel = hiltViewModel()) {
@@ -165,6 +166,7 @@ fun ClockDetails(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun LastClock(
     state: ClockReducer.ClockState,
@@ -258,6 +260,7 @@ fun LastClock(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ClockDetails(hidden: Boolean, clockHour: ClockHour) {
     val (_, time) = formatInstantToDateTime(clockHour.date)

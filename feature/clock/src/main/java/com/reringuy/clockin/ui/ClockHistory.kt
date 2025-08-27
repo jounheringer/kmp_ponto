@@ -28,10 +28,11 @@ import com.reringuy.clockin.reducer.ClockHistoryReducer
 import com.reringuy.clockin.utils.formatInstantToDateTime
 import com.reringuy.clockin.utils.formatLocalDateToDate
 import com.reringuy.clockin.viewmodel.ClockHistoryViewmodel
-import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.mvi.rememberFlowWithLifecycle
-import com.reringuy.mvi.utils.OperationHandler
-import com.reringuy.ui.theme.componentes.Loading
+import com.reringuy.database.relation.ClockWithHours
+import com.reringuy.utils.OperationHandler
+import com.reringuy.utils.components.Loading
+import com.reringuy.utils.mvi.rememberFlowWithLifecycle
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun ClockHistoryWrapper(modifier: Modifier, viewmodel: ClockHistoryViewmodel = hiltViewModel()) {
@@ -88,6 +89,7 @@ fun ClockHistoryScreen(modifier: Modifier, clockHours: List<ClockWithHours>) {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ClockHistoryItem(clockWithHours: ClockWithHours) {
     val clockDate = formatLocalDateToDate(clockWithHours.clock.dateStart)

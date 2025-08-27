@@ -2,13 +2,10 @@ package com.reringuy.clockin.reducer
 
 import com.reringuy.clockin.reducer.ClockReducer.ClockEffects.OnError
 import com.reringuy.clockin.reducer.ClockReducer.ClockEffects.OnTodayClockLoaded
-import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.database.models.ClockHour
-import com.reringuy.mvi.Reducer
-import com.reringuy.mvi.utils.OperationHandler
-import com.reringuy.mvi.utils.OperationHandler.Failure
-import com.reringuy.mvi.utils.OperationHandler.Success
-import com.reringuy.mvi.utils.OperationHandler.Waiting
+import com.reringuy.database.entities.ClockHour
+import com.reringuy.database.relation.ClockWithHours
+import com.reringuy.utils.OperationHandler
+import com.reringuy.utils.mvi.Reducer
 
 class ClockReducer : Reducer<
         ClockReducer.ClockState,
@@ -41,7 +38,7 @@ class ClockReducer : Reducer<
                 loading = false,
                 dataVisible = false,
                 historyExpanded = false,
-                todayClock = Waiting,
+                todayClock = OperationHandler.Waiting,
                 workedHours = "00:00",
                 bankedHours = "00:00"
             )
@@ -62,13 +59,13 @@ class ClockReducer : Reducer<
             }
 
             is ClockEvents.SetTodayClock -> {
-                if (event.todayClock is Failure) {
+                if (event.todayClock is OperationHandler.Failure) {
                     return Pair(
                         previousState.copy(todayClock = event.todayClock),
                         OnError(event.todayClock.message)
                     )
                 }
-                if (event.todayClock is Success)
+                if (event.todayClock is OperationHandler.Success)
                     return Pair(
                         previousState.copy(todayClock = event.todayClock),
                         OnTodayClockLoaded(event.todayClock.data)
@@ -77,19 +74,19 @@ class ClockReducer : Reducer<
             }
 
             is ClockEvents.SetClockHour -> {
-                if (previousState.todayClock is Success) {
+                if (previousState.todayClock is OperationHandler.Success) {
                     val updatedTodayClock = previousState.todayClock.data.copy(
                         clockHours = previousState.todayClock.data.clockHours.plus(event.clockHour)
                     )
                     return Pair(
                         previousState.copy(
-                            todayClock = Success(updatedTodayClock)
+                            todayClock = OperationHandler.Success(updatedTodayClock)
                         ), null
                     )
                 } else {
                     return Pair(
                         previousState.copy(
-                            todayClock = Failure("Erro ao registrar ponto")
+                            todayClock = OperationHandler.Failure("Erro ao registrar ponto")
                         ), OnError(
                             "Erro ao registrar ponto"
                         )

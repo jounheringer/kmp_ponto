@@ -1,8 +1,10 @@
 package com.reringuy.clockin.reducer
 
-import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.mvi.Reducer
-import com.reringuy.mvi.utils.OperationHandler
+import com.reringuy.database.relation.ClockWithHours
+import com.reringuy.utils.OperationHandler
+import com.reringuy.utils.mvi.Reducer
+import kotlin.time.ExperimentalTime
+
 
 class ClockHistoryReducer :
     Reducer<ClockHistoryReducer.ClockHistoryState, ClockHistoryReducer.ClockHistoryEvent, ClockHistoryReducer.ClockHistoryEffect> {
@@ -26,6 +28,7 @@ class ClockHistoryReducer :
 
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun reduce(
         previousState: ClockHistoryState,
         event: ClockHistoryEvent

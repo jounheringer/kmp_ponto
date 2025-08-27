@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 dependencyResolutionManagement {
@@ -16,16 +17,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
 rootProject.name = "Ponto"
-include(":app")
 include(":feature")
 include(":feature:clock")
-include(":core")
-include(":core:ui")
-include(":core:database")
-include(":core:dependency-injection")
-include(":core:mvi")
-include(":core:build-config")
+include(":shared")
+include(":composeApp")
+include(":database")
+include(":core:utils")

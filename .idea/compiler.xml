@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="17">
+      <module name="Ponto.core.database" target="11" />
+      <module name="Ponto.core.database.main" target="11" />
+      <module name="Ponto.core.database.test" target="11" />
+      <module name="Ponto.core.main" target="11" />
+      <module name="Ponto.core.test" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -5,25 +5,27 @@ import androidx.lifecycle.viewModelScope
 import com.reringuy.clockin.reducer.ClockReducer
 import com.reringuy.clockin.utils.formatDurationToHoursAndMinutes
 import com.reringuy.clockin.utils.formatInstantToYearAndMonth
-import com.reringuy.database.dao.PontoDao
-import com.reringuy.database.dto.ClockWithHours
-import com.reringuy.database.models.ClockHour
-import com.reringuy.database.models.ClockHourType
-import com.reringuy.mvi.BaseViewmodel
-import com.reringuy.mvi.utils.OperationHandler
+import com.reringuy.database.dao.ClockDao
+import com.reringuy.database.entities.ClockHour
+import com.reringuy.database.entities.ClockHourType
+import com.reringuy.database.relation.ClockWithHours
+import com.reringuy.utils.OperationHandler
+import com.reringuy.utils.mvi.BaseViewmodel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @HiltViewModel
 class ClockInViewmodel @Inject constructor(
-    private val clockDao: PontoDao
+    private val clockDao: ClockDao
 ) : BaseViewmodel<ClockReducer.ClockState, ClockReducer.ClockEvents, ClockReducer.ClockEffects>(
     initialState = ClockReducer.ClockState.initial,
     reducer = ClockReducer()
@@ -33,11 +35,12 @@ class ClockInViewmodel @Inject constructor(
         getBankedHours()
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun loadTodayClock() {
         sendEvent(ClockReducer.ClockEvents.SetTodayClock(OperationHandler.Loading))
         viewModelScope.launch {
             try {
-                clockDao.getClockByDate(LocalDate.now()).collect {
+                clockDao.getClockByDate(Clock.System.now()).collect {
                     if (it != null)
                         sendEventForEffect(
                             ClockReducer.ClockEvents.SetTodayClock(
@@ -65,10 +68,11 @@ class ClockInViewmodel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun getBankedHours() {
         viewModelScope.launch {
             try {
-                val currentYearMonth = formatInstantToYearAndMonth(Instant.now())
+                val currentYearMonth = formatInstantToYearAndMonth(Clock.System.now())
                 clockDao.getClocksByMonth(currentYearMonth).collectLatest { clockWithHours ->
                     var saldoTotal = Duration.ZERO
                     val sortedClockHours =
@@ -83,10 +87,10 @@ class ClockInViewmodel @Inject constructor(
 
                     timeIntervals.forEach { (checkIn, checkOut) ->
                         if (checkIn.type == ClockHourType.ENTRADA)
-                            workedHourDay += Duration.between(checkIn.date, checkOut)
+                            workedHourDay += (checkIn.date - checkOut)
                     }
 
-                    saldoTotal += workedHourDay.minusHours(8)
+                    saldoTotal += workedHourDay.minus(8.hours)
                     sendEvent(
                         ClockReducer.ClockEvents.SetBankedHours(
                             formatDurationToHoursAndMinutes(saldoTotal)
@@ -100,6 +104,7 @@ class ClockInViewmodel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun getWorkedHours(clockWithHours: ClockWithHours) {
         viewModelScope.launch {
             try {
@@ -114,11 +119,11 @@ class ClockInViewmodel @Inject constructor(
                 }
 
                 timeIntervals.forEach { (checkIn, checkOut) ->
-                    workedHourDay += Duration.between(checkIn, checkOut)
+                    workedHourDay += (checkIn - checkOut)
                 }
                 sendEvent(
                     ClockReducer.ClockEvents.SetWorkedHours(
-                        formatDurationToHoursAndMinutes(workedHourDay.minusHours(8))
+                        formatDurationToHoursAndMinutes(workedHourDay.minus(8.hours))
                     )
                 )
             } catch (e: Exception) {
