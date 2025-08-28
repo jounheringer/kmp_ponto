@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -55,6 +56,7 @@ fun App() {
 
     if (!showBottomBar)
         Scaffold(
+            modifier = Modifier.safeDrawingPadding(),
             topBar = { CommonTopBar(scrollBehavior) },
             bottomBar = {
                 PontoBottomAppBar(
@@ -70,6 +72,7 @@ fun App() {
     else {
         if (windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
             PermanentNavigationDrawer(
+                modifier = Modifier.safeDrawingPadding(),
                 drawerContent = {
                     Column(
                         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
@@ -94,6 +97,7 @@ fun App() {
             }
         } else {
             ModalNavigationDrawer(
+                modifier = Modifier.safeDrawingPadding(),
                 drawerContent = {
                     Column(
                         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
