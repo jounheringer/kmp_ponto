@@ -44,6 +44,11 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
+
+        lint {
+            abortOnError = false
+            disable.add("MultipleAwaitPointerEventScopes")
+        }
     }
 
     sourceSets {

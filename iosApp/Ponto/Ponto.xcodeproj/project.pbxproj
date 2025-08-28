@@ -99,9 +99,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F01870F72E5E08F2008A4481 /* Build configuration list for PBXNativeTarget "Ponto" */;
 			buildPhases = (
+				FAE8538C529F296B2AE9E9DE /* Compile Kotlin */,
 				F01870D22E5E08F0008A4481 /* Sources */,
 				F01870D32E5E08F0008A4481 /* Frameworks */,
 				F01870D42E5E08F0008A4481 /* Resources */,
+				F0C710782E607A39002B3152 /* Compile Kotlin Framework */,
 			);
 			buildRules = (
 			);
@@ -230,6 +232,41 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F0C710782E607A39002B3152 /* Compile Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${SRCROOT}/../..\"\n\n# Verifique se o gradlew existe no diretório atual\nif [ ! -f \"./gradlew\" ]; then\n    echo \"./gradlew not found. Please ensure your project structure is correct.\"\n    exit 1\nfi\n\n# Execute o Gradle para gerar e empacotar o framework.\n./gradlew :composeapp:embedAndSignAppleFrameworkForXcode\n";
+		};
+		FAE8538C529F296B2AE9E9DE /* Compile Kotlin */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/../..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F01870D22E5E08F0008A4481 /* Sources */ = {
@@ -399,9 +436,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53J73962FY;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Ponto",
+					"\"$(SRCROOT)/../../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -431,9 +470,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 53J73962FY;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Ponto",
+					"\"$(SRCROOT)/../../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

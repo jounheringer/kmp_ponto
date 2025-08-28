@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.12.1" type="configured_issues">
+    <config id="MultipleAwaitPointerEventScopes" severity="ignore"/>
+    <config id="ReturnFromAwaitPointerEventScope" severity="ignore"/>
+    <config id="SuspiciousCompositionLocalModifierRead" severity="ignore"/>
+
+</incidents>

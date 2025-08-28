@@ -1,0 +1,8 @@
+{
+  "locationBySourceSetName": {
+    "appleMain": "/Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/classes/kotlin/metadata/appleMain/klib/utils_appleMain",
+    "commonMain": "/Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/classes/kotlin/metadata/commonMain",
+    "iosMain": "/Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/classes/kotlin/metadata/iosMain/klib/utils_iosMain",
+    "nativeMain": "/Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/classes/kotlin/metadata/nativeMain/klib/utils_nativeMain"
+  }
+}

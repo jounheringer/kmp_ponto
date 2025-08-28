@@ -48,24 +48,18 @@ android {
 kotlin {
     androidTarget()
     jvm()
-
-    val xcfName = "composeAppKit"
-
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+            freeCompilerArgs += listOf(
+                "-Xbinary=bundleId=com.reringuy.composeapp",
+                "-Xexport-kdoc",
+            )
         }
     }
 
@@ -126,4 +120,16 @@ kotlin {
         }
     }
 
+}
+
+tasks.matching {
+    it.name in listOf(
+        "linkReleaseFrameworkIosArm64",
+        "linkReleaseFrameworkIosSimulatorArm64",
+        "createReleaseApkListingFileRedirect",
+        "linkReleaseFrameworkIosX64",
+        "packageRelease"
+    )
+}.configureEach {
+    onlyIf { gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) } }
 }

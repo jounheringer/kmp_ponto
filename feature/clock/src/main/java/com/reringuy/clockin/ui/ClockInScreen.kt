@@ -84,8 +84,9 @@ fun ClockInScreenWrapper(modifier: Modifier, viewmodel: ClockInViewmodel = hiltV
                 onRegisterClockHour = viewmodel::setClockHour
             )
         }
-    } else
+    } else {
         Loading()
+    }
 }
 
 @Composable

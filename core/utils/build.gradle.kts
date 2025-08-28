@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
-    alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.kotlin.serialization)
@@ -19,7 +18,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "com.reringuy.shared"
+        namespace = "com.reringuy.core.utils"
         compileSdk = 36
         minSdk = 26
 

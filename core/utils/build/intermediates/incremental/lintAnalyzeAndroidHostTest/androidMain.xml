@@ -1,0 +1,24 @@
+<variant
+    name="androidMain"
+    package="com.reringuy.core.utils"
+    minSdkVersion="26"
+    targetSdkVersion="26"
+    mergedManifest="build/intermediates/merged_manifest/androidMain/processAndroidMainManifest/AndroidManifest.xml"
+    partialResultsDir="build/intermediates/unit_test_lint_partial_results/androidMain/lintAnalyzeAndroidHostTest/out"
+    desugaredMethodsFiles="/Users/joaovictorheringer/.gradle/caches/8.14.3/transforms/be6b35d85ff3eaedacd5ce2bc5f3c3b4/transformed/D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+  </sourceProviders>
+  <testSourceProviders>
+    <sourceProvider
+        manifests="src/androidHostTest/AndroidManifest.xml"
+        javaDirectories="src/androidHostTest/kotlin:build/generated/compose/resourceGenerator/kotlin/androidHostTestResourceAccessors:src/commonTest/kotlin:build/generated/compose/resourceGenerator/kotlin/commonTestResourceAccessors"
+        unitTest="true"/>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      type="UNIT_TEST">
+  </artifact>
+</variant>

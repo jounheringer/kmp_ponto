@@ -95,8 +95,12 @@ fun ClockHistoryItem(clockWithHours: ClockWithHours) {
     val clockDate = formatLocalDateToDate(clockWithHours.clock.dateStart)
     clockWithHours.clockHours.forEach { clockHour ->
         val (date, hour) = formatInstantToDateTime(clockHour.date)
-        Card(modifier = Modifier.fillMaxWidth().padding(0.dp, 8.dp)) {
-            Row(modifier = Modifier.height(IntrinsicSize.Min).padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 8.dp)) {
+            Row(modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                     Text(text = "Ponto do dia:", style = MaterialTheme.typography.titleMedium)
                     Text(text = clockDate, style = MaterialTheme.typography.titleMedium)
