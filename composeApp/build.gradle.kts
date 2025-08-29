@@ -105,6 +105,7 @@ kotlin {
                 implementation(project(":core:utils"))
                 implementation(project(":shared"))
                 implementation(project(":feature:clock"))
+                implementation(project(":database"))
                 // Add KMP dependencies here
             }
         }

@@ -46,23 +46,28 @@ kotlin {
                 api(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
                 implementation(libs.kotlinx.datetime)
+
+                implementation(libs.bundles.koin)
+                implementation(project.dependencies.platform(libs.koin.bom))
                 // Add KMP dependencies here
             }
         }
 
         androidMain {
             dependencies {
+                implementation(libs.koin.core)
             }
         }
 
         iosMain {
             dependencies {
+                implementation(libs.koin.core)
             }
         }
 
         jvmMain {
             dependencies {
-
+                implementation(libs.koin.core)
             }
         }
     }
@@ -73,7 +78,13 @@ kotlin {
         add("kspIosSimulatorArm64", libs.androidx.room.compiler)
         add("kspIosX64", libs.androidx.room.compiler)
         add("kspIosArm64", libs.androidx.room.compiler)
-//        ksp(libs.androidx.room.compiler)
+        add("kspCommonMainMetadata", libs.koin.ksp.compiler)
+    }
+
+    ksp {
+        arg("koin.generated", "true")
+        arg("KOIN_DEFAULT_MODULE", "false")
+        arg("KOIN_CONFIG_CHECK","true")
     }
 
     targets.configureEach {

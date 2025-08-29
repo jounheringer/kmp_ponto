@@ -2,7 +2,6 @@ package com.reringuy.composeapp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import com.reringuy.clock.ui.ClockHistoryWrapper
+import com.reringuy.clock.ui.ClockInScreenWrapper
 import com.reringuy.shared.routes.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,10 +65,8 @@ fun App() {
                     selectedDestination
                 ) { selectedDestination = it }
             }
-        ) { padding ->
-            BoxWithConstraints(modifier = Modifier.padding(padding)) {
-                Text(text = "aaaaaaaaaaa", style = MaterialTheme.typography.titleLarge)
-            }
+        ) { innerPadding ->
+            ClockInScreenWrapper(modifier = Modifier.padding(innerPadding))
         }
     else {
         if (windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
@@ -85,13 +84,13 @@ fun App() {
                                 selectedDestination
                             ) { selectedDestination = it }
                         }
-
                     }
                 }
             ) {
                 Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    BoxWithConstraints(modifier = Modifier.padding(paddingValues)) {
-                        Text(text = "aaaaaaaaaaa", style = MaterialTheme.typography.titleLarge)
+                    Row(modifier = Modifier.padding(paddingValues), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ClockInScreenWrapper(modifier = Modifier)
+                        ClockHistoryWrapper(modifier = Modifier)
                     }
                 }
             }
@@ -114,8 +113,9 @@ fun App() {
                 }
             ) {
                 Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    BoxWithConstraints(modifier = Modifier.padding(paddingValues)) {
-                        Text(text = "aaaaaaaaaaa", style = MaterialTheme.typography.titleLarge)
+                    Row(modifier = Modifier.padding(paddingValues), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ClockInScreenWrapper(modifier = Modifier)
+                        ClockHistoryWrapper(modifier = Modifier)
                     }
                 }
             }
