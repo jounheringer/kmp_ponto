@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -44,6 +46,18 @@ android {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.reringuy.composeapp.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.reringuy.composeapp"
+            packageVersion = "1.0.0"
+        }
+    }
+}
+
 
 kotlin {
     androidTarget()
@@ -68,6 +82,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.androidx.runtime)
+
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
@@ -81,8 +96,15 @@ kotlin {
                 implementation(libs.jetbrains.compose.icons)
                 implementation(libs.jetbrains.compose.ui.graphics)
 
+                implementation(libs.bundles.koin)
+                implementation(project.dependencies.platform(libs.koin.bom))
+
+                implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+                implementation(libs.jetbrains.lifecycle.runtimeCompose)
+
                 implementation(project(":core:utils"))
                 implementation(project(":shared"))
+                implementation(project(":feature:clock"))
                 // Add KMP dependencies here
             }
         }
@@ -96,14 +118,14 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.activity.compose)
-//                implementation(project(":feature:clock"))
+                implementation(project(":feature:clock"))
 
             }
         }
 
         iosMain {
             dependencies {
-//                implementation(project(":feature:clock"))
+                implementation(project(":feature:clock"))
 
                 // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
                 // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
@@ -115,7 +137,8 @@ kotlin {
 
         jvmMain {
             dependencies {
-
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutinesSwing)
             }
         }
     }

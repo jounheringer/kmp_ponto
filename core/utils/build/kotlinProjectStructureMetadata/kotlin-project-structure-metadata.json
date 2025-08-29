@@ -71,8 +71,8 @@
           "org.jetbrains.compose.components:components-resources",
           "org.jetbrains.compose.components:components-ui-tooling-preview",
           "org.jetbrains.compose.material:material",
-          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
-          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel"
+          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose",
+          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose"
         ],
         "sourceSetCInteropMetadataDirectory": "appleMain-cinterop",
         "binaryLayout": "klib",
@@ -92,8 +92,8 @@
           "org.jetbrains.compose.components:components-resources",
           "org.jetbrains.compose.components:components-ui-tooling-preview",
           "org.jetbrains.compose.material:material",
-          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
-          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel"
+          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose",
+          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose"
         ],
         "binaryLayout": "klib"
       },
@@ -112,8 +112,8 @@
           "org.jetbrains.compose.components:components-resources",
           "org.jetbrains.compose.components:components-ui-tooling-preview",
           "org.jetbrains.compose.material:material",
-          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
-          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel"
+          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose",
+          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose"
         ],
         "sourceSetCInteropMetadataDirectory": "iosMain-cinterop",
         "binaryLayout": "klib",
@@ -134,8 +134,8 @@
           "org.jetbrains.compose.components:components-resources",
           "org.jetbrains.compose.components:components-ui-tooling-preview",
           "org.jetbrains.compose.material:material",
-          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",
-          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel"
+          "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose",
+          "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose"
         ],
         "sourceSetCInteropMetadataDirectory": "nativeMain-cinterop",
         "binaryLayout": "klib",

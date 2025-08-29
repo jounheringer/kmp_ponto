@@ -47,8 +47,8 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
                 implementation(compose.material)
 
-                implementation(libs.androidx.lifecycle.runtimeCompose)
-                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+                implementation(libs.jetbrains.lifecycle.runtimeCompose)
                 // Add KMP dependencies here
             }
         }

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
+      <module name="Ponto.androidMain.main" target="11" />
+      <module name="Ponto.androidMain.test" target="11" />
       <module name="Ponto.core.database" target="11" />
       <module name="Ponto.core.database.main" target="11" />
       <module name="Ponto.core.database.test" target="11" />

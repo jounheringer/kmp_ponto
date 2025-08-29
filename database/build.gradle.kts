@@ -43,7 +43,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(libs.androidx.room.runtime)
+                api(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
                 implementation(libs.kotlinx.datetime)
                 // Add KMP dependencies here
@@ -60,7 +60,7 @@ kotlin {
             }
         }
 
-        jvmMain  {
+        jvmMain {
             dependencies {
 
             }
@@ -73,6 +73,7 @@ kotlin {
         add("kspIosSimulatorArm64", libs.androidx.room.compiler)
         add("kspIosX64", libs.androidx.room.compiler)
         add("kspIosArm64", libs.androidx.room.compiler)
+//        ksp(libs.androidx.room.compiler)
     }
 
     targets.configureEach {

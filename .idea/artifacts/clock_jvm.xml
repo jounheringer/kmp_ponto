@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="clock-jvm">
+    <output-path>$PROJECT_DIR$/feature/clock/build/libs</output-path>
+    <root id="archive" name="clock-jvm.jar">
+      <element id="module-output" name="Ponto.feature.clock.jvmMain" />
+    </root>
+  </artifact>
+</component>
