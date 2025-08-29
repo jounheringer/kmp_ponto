@@ -1,13 +1,13 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml:2:13-83
-INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml:2:13-83
+ADDED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml:2:13-83
+INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml:2:13-83
 	package
-		INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml
+		INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml
 	xmlns:android
-		ADDED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml:2:23-81
+		ADDED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml:2:23-81
 uses-sdk
-INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml reason: use-sdk injection requested
-INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml
+INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml reason: use-sdk injection requested
+INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml
 	android:minSdkVersion
-		INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest2658130425696792561.xml
+		INJECTED from /Users/joaovictorheringer/Documents/teste_migrate/kmp_ponto/core/utils/build/intermediates/tmp/ProcessLibraryManifest/tempAndroidManifest7315124544346517908.xml

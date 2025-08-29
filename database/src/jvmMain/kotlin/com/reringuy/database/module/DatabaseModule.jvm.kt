@@ -5,6 +5,6 @@ import com.reringuy.database.getDatabaseBuilder
 import org.koin.dsl.module
 
 actual val databaseModule = module {
-    single { getDatabaseBuilder() }
+    single { getDatabaseBuilder().build() }
     single { get<PontoDatabase>().clockDao() }
 }

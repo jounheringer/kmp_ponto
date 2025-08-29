@@ -88,7 +88,10 @@ fun App() {
                 }
             ) {
                 Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    Row(modifier = Modifier.padding(paddingValues), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.padding(paddingValues),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         ClockInScreenWrapper(modifier = Modifier)
                         ClockHistoryWrapper(modifier = Modifier)
                     }
@@ -113,7 +116,10 @@ fun App() {
                 }
             ) {
                 Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    Row(modifier = Modifier.padding(paddingValues), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.padding(paddingValues),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         ClockInScreenWrapper(modifier = Modifier)
                         ClockHistoryWrapper(modifier = Modifier)
                     }
