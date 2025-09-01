@@ -1,8 +1,0 @@
-{
-  "buildPath": ":",
-  "projectPath": ":core:utils",
-  "moduleId": {
-    "groupId": "Ponto.core",
-    "moduleId": "utils"
-  }
-}
