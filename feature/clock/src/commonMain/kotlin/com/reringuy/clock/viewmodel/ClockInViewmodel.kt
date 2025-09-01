@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -37,7 +39,9 @@ class ClockInViewmodel(
         sendEvent(ClockReducer.ClockEvents.SetTodayClock(OperationHandler.Loading))
         viewModelScope.launch {
             try {
-                val clockFull = clockDao.getClockByDate(Clock.System.now())
+                val currentDate  = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+                val clockFull = clockDao.getClockByDate(currentDate)
                 if (clockFull != null)
                     sendEventForEffect(
                         ClockReducer.ClockEvents.SetTodayClock(
@@ -50,12 +54,12 @@ class ClockInViewmodel(
                     val newClock = ClockWithHours.new()
                     withContext(Dispatchers.IO) {
                         newClock.clock.uid = clockDao.insertClock(newClock.clock)
-                    }
-                    sendEventForEffect(
-                        ClockReducer.ClockEvents.SetTodayClock(
-                            OperationHandler.Success(newClock)
+                        sendEventForEffect(
+                            ClockReducer.ClockEvents.SetTodayClock(
+                                OperationHandler.Success(newClock)
+                            )
                         )
-                    )
+                    }
                 }
             } catch (e: Exception) {
                 Logger.e("ClockInViewmodel") { "loadTodayClock: ${e.message}" }

@@ -95,6 +95,7 @@ kotlin {
 
                 implementation(libs.jetbrains.compose.icons)
                 implementation(libs.jetbrains.compose.ui.graphics)
+                implementation(libs.jetbrains.compose.icons.extended)
 
                 implementation(libs.bundles.koin)
                 implementation(project.dependencies.platform(libs.koin.bom))

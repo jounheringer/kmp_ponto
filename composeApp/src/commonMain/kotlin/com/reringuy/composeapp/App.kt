@@ -3,18 +3,19 @@ package com.reringuy.composeapp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.reringuy.clock.ui.ClockHistoryWrapper
@@ -50,26 +51,11 @@ fun App() {
     val bottomBarRoutes = listOf(Routes.Menu, Routes.Schedule, Routes.Card, Routes.Profile)
     val windowSize = currentWindowAdaptiveInfo().windowSizeClass
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val showBottomBar =
-        windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
     var selectedDestination: Routes by remember { mutableStateOf(Routes.Menu) }
 
-    if (!showBottomBar)
-        Scaffold(
-            modifier = Modifier.safeDrawingPadding(),
-            topBar = { CommonTopBar(scrollBehavior) },
-            bottomBar = {
-                PontoBottomAppBar(
-                    menuRoutes = bottomBarRoutes,
-                    selectedDestination
-                ) { selectedDestination = it }
-            }
-        ) { innerPadding ->
-            ClockInScreenWrapper(modifier = Modifier.padding(innerPadding))
-        }
-    else {
-        if (windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) {
+    when {
+        windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
             PermanentNavigationDrawer(
                 modifier = Modifier.safeDrawingPadding(),
                 drawerContent = {
@@ -78,27 +64,34 @@ fun App() {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(modifier = Modifier.fillMaxHeight().padding(8.dp, 16.dp)) {
-                            NavigationButtons(
-                                bottomBarRoutes,
-                                selectedDestination
+                        Column(
+                            modifier = Modifier.fillMaxHeight().padding(8.dp, 16.dp).width(IntrinsicSize.Min),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            ExpandedNavigationButtons(
+                                menuRoutes = bottomBarRoutes,
+                                selectedRoute = selectedDestination,
+                                onClickBack = {}
                             ) { selectedDestination = it }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                DrawerOptions(true)
+                            }
                         }
                     }
                 }
             ) {
-                Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    Row(
-                        modifier = Modifier.padding(paddingValues),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ClockInScreenWrapper(modifier = Modifier)
+                Scaffold(topBar = { TwoPanelTopBar(scrollBehavior) }) { paddingValues ->
+                    Row(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+                        ClockInScreenWrapper(modifier = Modifier.fillMaxWidth(0.45f))
                         ClockHistoryWrapper(modifier = Modifier)
                     }
                 }
             }
-        } else {
-            ModalNavigationDrawer(
+        }
+
+        windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+            PermanentNavigationDrawer(
                 modifier = Modifier.safeDrawingPadding(),
                 drawerContent = {
                     Column(
@@ -106,24 +99,45 @@ fun App() {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(modifier = Modifier.fillMaxHeight().padding(8.dp, 16.dp)) {
+                        Column(
+                            modifier = Modifier.fillMaxHeight().padding(8.dp, 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
                             NavigationButtons(
-                                bottomBarRoutes,
-                                selectedDestination
+                                menuRoutes = bottomBarRoutes,
+                                selectedRoute = selectedDestination,
+                                twoPanel = true,
+                                onNavigateBack = {}
                             ) { selectedDestination = it }
+                            Spacer(modifier = Modifier.weight(1f))
+                            DrawerOptions(false)
                         }
                     }
                 }
             ) {
-                Scaffold(topBar = { CommonTopBar(scrollBehavior) }) { paddingValues ->
-                    Row(
-                        modifier = Modifier.padding(paddingValues),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ClockInScreenWrapper(modifier = Modifier)
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = { TwoPanelTopBar(scrollBehavior) }) { paddingValues ->
+                    Row(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+                        ClockInScreenWrapper(modifier = Modifier.fillMaxWidth(0.45f))
                         ClockHistoryWrapper(modifier = Modifier)
                     }
                 }
+            }
+        }
+
+        else -> {
+            Scaffold(
+                modifier = Modifier.safeDrawingPadding(),
+                topBar = { OnePanelTopBar(scrollBehavior) },
+                bottomBar = {
+                    PontoBottomAppBar(
+                        menuRoutes = bottomBarRoutes,
+                        selectedDestination
+                    ) { selectedDestination = it }
+                }
+            ) { innerPadding ->
+                ClockInScreenWrapper(modifier = Modifier.padding(innerPadding))
             }
         }
     }
@@ -131,7 +145,7 @@ fun App() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonTopBar(scrollBehavior: TopAppBarScrollBehavior) {
+fun OnePanelTopBar(scrollBehavior: TopAppBarScrollBehavior) {
     TopAppBar(
         title = { Text(text = "Titulo") },
         navigationIcon = {
@@ -154,6 +168,15 @@ fun CommonTopBar(scrollBehavior: TopAppBarScrollBehavior) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TwoPanelTopBar(scrollBehavior: TopAppBarScrollBehavior) {
+    TopAppBar(
+        title = { Text(text = "Titulo") },
+        scrollBehavior = scrollBehavior
+    )
+}
+
 @Composable
 fun PontoBottomAppBar(
     menuRoutes: List<Routes>,
@@ -162,7 +185,11 @@ fun PontoBottomAppBar(
 ) {
     BottomAppBar(containerColor = MaterialTheme.colorScheme.primaryContainer) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            NavigationButtons(menuRoutes, selectedRoute, onRouteSelected)
+            NavigationButtons(
+                menuRoutes = menuRoutes,
+                selectedRoute = selectedRoute,
+                onRouteSelected = onRouteSelected
+            )
         }
     }
 }
@@ -171,8 +198,15 @@ fun PontoBottomAppBar(
 fun NavigationButtons(
     menuRoutes: List<Routes>,
     selectedRoute: Routes,
+    twoPanel: Boolean = false,
+    onNavigateBack: () -> Unit = {},
     onRouteSelected: (Routes) -> Unit,
 ) {
+    if(twoPanel)
+    IconButton(modifier = Modifier.padding(bottom = 12.dp), onClick = onNavigateBack) {
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MaterialTheme.colorScheme.primary)
+    }
+
     menuRoutes.forEach { route ->
         if (route == selectedRoute)
             Card(
@@ -182,52 +216,135 @@ fun NavigationButtons(
                 )
             ) {
                 IconButton(onClick = { }) {
-                    when (route) {
-                        Routes.Card -> Icon(
-                            imageVector = Icons.Filled.ShoppingCart,
-                            contentDescription = route.title
-                        )
-
-                        Routes.Menu -> Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = route.title
-                        )
-
-                        Routes.Profile -> Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = route.title
-                        )
-
-                        Routes.Schedule -> Icon(
-                            imageVector = Icons.Rounded.Info,
-                            contentDescription = route.title
-                        )
-                    }
+                    Icon(imageVector = route.icon, contentDescription = route.title)
                 }
             }
         else
             IconButton(onClick = { onRouteSelected(route) }) {
-                when (route) {
-                    Routes.Card -> Icon(
-                        imageVector = Icons.Filled.ShoppingCart,
-                        contentDescription = route.title
-                    )
+                Icon(imageVector = route.icon, contentDescription = route.title, tint = MaterialTheme.colorScheme.primary)
+            }
+    }
+}
 
-                    Routes.Menu -> Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = route.title
-                    )
+@Composable
+fun ExpandedNavigationButtons(
+    menuRoutes: List<Routes>,
+    selectedRoute: Routes,
+    onClickBack: () -> Unit,
+    onRouteSelected: (Routes) -> Unit,
+) {
+    Card(
+        modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(),
+        onClick = onClickBack,
+        colors = CardDefaults.cardColors().copy(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            IconButton(onClick = onClickBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar"
+                )
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Voltar",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 
-                    Routes.Profile -> Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = route.title
-                    )
-
-                    Routes.Schedule -> Icon(
-                        imageVector = Icons.Rounded.Info,
-                        contentDescription = route.title
+    menuRoutes.forEach { route ->
+        if (route == selectedRoute)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onRouteSelected(route) },
+                colors = CardDefaults.cardColors().copy(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    IconButton(onClick = { onRouteSelected(route) }) {
+                        Icon(imageVector = route.icon, contentDescription = route.title)
+                    }
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = route.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
+        else
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onRouteSelected(route) },
+                colors = CardDefaults.cardColors().copy(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    IconButton(onClick = { onRouteSelected(route) }) {
+                        Icon(imageVector = route.icon, contentDescription = route.title)
+                    }
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = route.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+    }
+}
+
+@Composable
+fun DrawerOptions(expanded: Boolean) {
+    Card(
+        onClick = {},
+        colors = CardDefaults.cardColors().copy(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Preferencias")
+            if (expanded)
+                Text(text = "Preferencias", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+    Card(
+        onClick = {},
+        colors = CardDefaults.cardColors().copy(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(imageVector = Icons.Filled.Settings, contentDescription = "Configuração")
+            if (expanded)
+                Text(text = "Configuração", style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }

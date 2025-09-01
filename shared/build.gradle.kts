@@ -60,6 +60,8 @@ kotlin {
 
                 implementation(libs.jetbrains.compose.icons)
                 implementation(libs.jetbrains.compose.ui.graphics)
+                implementation(libs.jetbrains.compose.icons.extended)
+
                 // Add KMP dependencies here
             }
         }

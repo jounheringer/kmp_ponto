@@ -1,5 +1,5 @@
 [versions]
-agp = "8.12.1"
+agp = "8.12.2"
 kotlin = "2.2.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -27,6 +27,7 @@ jetbrainsKotlinJvm = "2.2.10"
 kotlinx-datetime = "0.7.1"
 androidx-lifecycle = "2.9.2"
 kotlinx-coroutines = "1.10.2"
+jetbrains-material-icon-extended = "1.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +59,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 jetbrains-compose-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "compose-multiplatform-icon" }
 jetbrains-compose-ui-graphics = { module = "org.jetbrains.compose.ui:ui-graphics", version.ref = "compose-multiplatform" }
+jetbrains-compose-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "jetbrains-material-icon-extended" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 [plugins]

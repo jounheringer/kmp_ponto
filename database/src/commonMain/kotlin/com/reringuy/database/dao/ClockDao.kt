@@ -1,12 +1,15 @@
 package com.reringuy.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.reringuy.database.entities.Clock
 import com.reringuy.database.entities.ClockHour
 import com.reringuy.database.relation.ClockWithHours
+import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -18,7 +21,7 @@ interface ClockDao {
 
     @Transaction
     @Query("SELECT * FROM pontos WHERE data_inicio = :date")
-    suspend fun getClockByDate(date: Instant): ClockWithHours?
+    suspend fun getClockByDate(date: LocalDate): ClockWithHours?
 
     @Transaction
     @Query("SELECT * FROM pontos WHERE data_inicio = :date")
@@ -28,7 +31,7 @@ interface ClockDao {
     @Query("SELECT * FROM pontos WHERE STRFTIME('%Y-%m', data_inicio) = :yearAndMonth")
     suspend fun getClocksByMonth(yearAndMonth: String): List<ClockWithHours>
 
-    @Upsert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     @OptIn(ExperimentalTime::class)
     suspend fun insertClock(clock: Clock): Long
 
